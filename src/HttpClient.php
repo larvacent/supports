@@ -1,0 +1,69 @@
+<?php
+/**
+ * @copyright Copyright (c) 2018 Larva Information Technology Co., Ltd.
+ * @link http://www.larvacent.com/
+ * @license http://www.larvacent.com/license/
+ */
+
+namespace Larva\Supports;
+
+use Larva\Supports\Traits\HasHttpRequest;
+
+/**
+ * Http 客户端
+ *
+ * @author Tongle Xu <xutongle@gmail.com>
+ */
+class HttpClient extends BaseObject
+{
+    use HasHttpRequest {
+        post as public;
+        get as public;
+        postJSON as public;
+        postXML as public;
+        request as public;
+    }
+
+    /**
+     * @var float
+     */
+    public $timeout = 5.0;
+
+    /**
+     * @var string
+     */
+    protected $baseUri = '';
+
+    /**
+     * 获取基础路径
+     * @return string
+     */
+    public function getBaseUri()
+    {
+        return $this->baseUri;
+    }
+
+    /**
+     * 设置基础路径
+     * @param string $baseUri
+     * @return $this
+     */
+    public function setBaseUri($baseUri)
+    {
+        $this->baseUri = $baseUri;
+        return $this;
+    }
+
+    /**
+     * 获取基础路径
+     * @param array $httpOptions
+     * @return string
+     */
+    public function setHttpOptions($httpOptions)
+    {
+        $this->httpOptions = $httpOptions;
+        return $this;
+    }
+
+
+}
