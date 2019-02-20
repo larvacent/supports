@@ -203,6 +203,20 @@ class LBSHelper
     }
 
     /**
+     * 获取 MongoDB 位置格式
+     * @param float $longitude
+     * @param float $latitude
+     * @return array
+     */
+    public function MongoLoc($longitude, $latitude)
+    {
+        return [
+            'type' => 'Point',
+            'coordinates' => [doubleval($longitude), doubleval($latitude)]
+        ];
+    }
+
+    /**
      * GCJ-02 转换为 BD-09  （火星坐标系 转百度即谷歌、高德 转 百度）
      * @param float $longitude
      * @param float $latitude
