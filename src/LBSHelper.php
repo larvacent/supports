@@ -208,12 +208,23 @@ class LBSHelper
      * @param float $latitude
      * @return array
      */
-    public function MongoLoc($longitude, $latitude)
+    public function getMongoGeometry($longitude, $latitude)
     {
         return [
             'type' => 'Point',
             'coordinates' => [doubleval($longitude), doubleval($latitude)]
         ];
+    }
+
+    /**
+     * 获取 MongoDB 位置格式
+     * @param float $longitude
+     * @param float $latitude
+     * @return array
+     */
+    public function Mongo2d($longitude, $latitude)
+    {
+        return [doubleval($longitude), doubleval($latitude)];
     }
 
     /**
