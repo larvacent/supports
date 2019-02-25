@@ -222,7 +222,7 @@ class LBSHelper
      * @param float $latitude
      * @return array
      */
-    public function Mongo2d($longitude, $latitude)
+    public function getMongo2d($longitude, $latitude)
     {
         return [doubleval($longitude), doubleval($latitude)];
     }
