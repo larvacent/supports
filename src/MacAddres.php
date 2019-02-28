@@ -7,7 +7,6 @@
 
 namespace Larva\Supports;
 
-
 /**
  * This class allows you to preform various operations with
  * Media Access Control (MAC addresses) on UNIX type systems.
@@ -22,16 +21,16 @@ class MacAddres
      * Regular expression for matching and validating a MAC address
      * @var string
      */
-    private static $valid_mac = "([0-9A-F]{2}[:-]){5}([0-9A-F]{2})";
+    private static $validMac = "([0-9A-F]{2}[:-]){5}([0-9A-F]{2})";
 
     /**
      * An array of valid MAC address characters
      * @var array
      */
-    private static $mac_address_vals = array(
+    private static $macAddressVals = [
         "0", "1", "2", "3", "4", "5", "6", "7",
         "8", "9", "A", "B", "C", "D", "E", "F"
-    );
+    ];
 
     /**
      * Change the MAC address of the network interface specified
@@ -65,7 +64,7 @@ class MacAddres
      */
     public static function generateMacAddress()
     {
-        $vals = self::$mac_address_vals;
+        $vals = self::$macAddressVals;
         if (count($vals) >= 1) {
             $mac = array("00"); // set first two digits manually
             while (count($mac) < 6) {
@@ -84,7 +83,7 @@ class MacAddres
      */
     public static function validateMacAddress($mac)
     {
-        return (bool) preg_match("/^" . self::$valid_mac . "$/i", $mac);
+        return (bool)preg_match("/^" . self::$validMac . "$/i", $mac);
     }
 
     /**
@@ -105,7 +104,7 @@ class MacAddres
     public static function getCurrentMacAddress($interface)
     {
         $ifconfig = self::runCommand("ifconfig {$interface}");
-        preg_match("/" . self::$valid_mac . "/i", $ifconfig, $ifconfig);
+        preg_match("/" . self::$validMac . "/i", $ifconfig, $ifconfig);
         if (isset($ifconfig[0])) {
             return trim(strtoupper($ifconfig[0]));
         }
