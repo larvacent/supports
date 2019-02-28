@@ -6,6 +6,8 @@
  */
 namespace Larva\Supports;
 
+use Stringy\Stringy as BaseStringy;
+
 /**
  * Class StringHelper
  *
@@ -13,6 +15,11 @@ namespace Larva\Supports;
  */
 class StringHelper
 {
+    /**
+     * @var
+     */
+    private static $_asciiCharMap;
+
     /**
      * The cache of snake-cased words.
      *
@@ -773,5 +780,86 @@ class StringHelper
         // . and , are the only decimal separators known in ICU data,
         // so its safe to call str_replace here
         return str_replace(',', '.', (string) $number);
+    }
+
+    /**
+     * Returns a camelCase version of the given string. Trims surrounding spaces, capitalizes letters following digits,
+     * spaces, dashes and underscores, and removes spaces, dashes, as well as underscores.
+     *
+     * @param string $str The string to convert to camelCase.
+     * @return string The string in camelCase.
+     */
+    public static function camelCase(string $str): string
+    {
+        return (string)BaseStringy::create($str)->camelize();
+    }
+
+    /**
+     * Returns an array consisting of the characters in the string.
+     *
+     * @param string $str
+     * @return string[] An array of string chars
+     */
+    public static function charsAsArray(string $str): array
+    {
+        return BaseStringy::create($str)->chars();
+    }
+
+    /**
+     * Converts all characters in the string to lowercase. An alias for PHP's mb_strtolower().
+     *
+     * @param string $str The string to convert to lowercase.
+     * @return string The lowercase string.
+     */
+    public static function toLowerCase(string $str): string
+    {
+        return (string)BaseStringy::create($str)->toLowerCase();
+    }
+
+    /**
+     * Returns ASCII character mappings, merging in any custom defined mappings from the 'customAsciiCharMappings'
+     * config setting.
+     *
+     * @return array The fully merged ASCII character mappings.
+     */
+    public static function asciiCharMap(): array
+    {
+        if (self::$_asciiCharMap !== null) {
+            return self::$_asciiCharMap;
+        }
+
+        // Get the map from Stringy.
+        self::$_asciiCharMap = (new Stringy(''))->getAsciiCharMap();
+
+        return self::$_asciiCharMap;
+    }
+
+    /**
+     * Converts an object to its string representation. If the object is an array, will glue the array elements togeter
+     * with the $glue param. Otherwise will cast the object to a string.
+     *
+     * @param mixed $object The object to convert to a string.
+     * @param string $glue The glue to use if the object is an array.
+     * @return string The string representation of the object.
+     */
+    public static function toString($object, string $glue = ','): string
+    {
+        if (is_scalar($object) || (is_object($object) && method_exists($object, '__toString'))) {
+            return (string)$object;
+        }
+
+        if (is_array($object) || $object instanceof \IteratorAggregate) {
+            $stringValues = [];
+
+            foreach ($object as $value) {
+                if (($value = static::toString($value, $glue)) !== '') {
+                    $stringValues[] = $value;
+                }
+            }
+
+            return implode($glue, $stringValues);
+        }
+
+        return '';
     }
 }
