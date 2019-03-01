@@ -191,7 +191,7 @@ class LBSHelper
      * @param float $latitude
      * @return array
      */
-    public function BD09ToGCJ02($longitude, $latitude)
+    public static function BD09ToGCJ02($longitude, $latitude)
     {
         $x = $longitude - 0.0065;
         $y = $latitude - 0.006;
@@ -208,7 +208,7 @@ class LBSHelper
      * @param float $latitude
      * @return array
      */
-    public function getMongoGeometry($longitude, $latitude)
+    public static function getMongoGeometry($longitude, $latitude)
     {
         return [
             'type' => 'Point',
@@ -222,7 +222,7 @@ class LBSHelper
      * @param float $latitude
      * @return array
      */
-    public function getMongo2d($longitude, $latitude)
+    public static function getMongo2d($longitude, $latitude)
     {
         return [doubleval($longitude), doubleval($latitude)];
     }
@@ -233,7 +233,7 @@ class LBSHelper
      * @param float $latitude
      * @return array (lon,lat);
      */
-    public function GCJ02ToBD09($longitude, $latitude)
+    public static function GCJ02ToBD09($longitude, $latitude)
     {
         $z = sqrt($longitude * $longitude + $latitude * $latitude) + 0.00002 * sin($latitude * static::$X_PI);
         $theta = atan2($latitude, $longitude) + 0.000003 * cos($longitude * static::$X_PI);
