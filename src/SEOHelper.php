@@ -35,4 +35,21 @@ class SEOHelper
             'body' => $urls
         ]);
     }
+
+    /**
+     * AMP MIP 清理
+     * @param string $token Token
+     * @param string $url Url
+     * @return mixed
+     */
+    public static function baiduAMPPing($token, $url)
+    {
+        $endpoint = '/update-ping/c/' . urlencode($url);
+        $client = new HttpClient();
+        $client->setHttpOptions([
+            'http_errors' => false,
+        ]);
+        $client->setBaseUri('http://c.mipcdn.com');
+        return $client->post($endpoint, ['key' => $token]);
+    }
 }
