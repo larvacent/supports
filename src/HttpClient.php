@@ -65,5 +65,17 @@ class HttpClient extends BaseObject
         return $this;
     }
 
-
+    /**
+     * 获取 响应的 Header
+     * @param string $url
+     * @param array $headers
+     * @return array|false
+     */
+    public static function getHeaders($url, $headers = [])
+    {
+        $http = new static(['timeout' => 20, 'verify' => false, 'headers' => $headers]);
+        /** @var \Psr\Http\Message\ResponseInterface $response */
+        $response = $http->getHttpClient()->get($url);
+        return $response->getHeaders();
+    }
 }
