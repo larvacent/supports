@@ -231,4 +231,22 @@ class IPHelper
         }
         return $result;
     }
+
+    /**
+     * DNS解析
+     * @param string $host
+     * @param boolean $onlyIp
+     * @return array|string
+     */
+    public static function dnsRecord($host, $onlyIp = false)
+    {
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            return $host;
+        }
+        $dnsRecord = dns_get_record($host, DNS_A);
+        if ($onlyIp) {
+            return array_column($dnsRecord, 'ip');
+        }
+        return $dnsRecord;
+    }
 }
