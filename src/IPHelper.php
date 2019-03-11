@@ -235,15 +235,16 @@ class IPHelper
     /**
      * DNS解析
      * @param string $host
+     * @param int $type 解析类型
      * @param boolean $onlyIp
      * @return array|string
      */
-    public static function dnsRecord($host, $onlyIp = false)
+    public static function dnsRecord($host, $type = DNS_A, $onlyIp = false)
     {
         if (filter_var($host, FILTER_VALIDATE_IP)) {
             return $host;
         }
-        $dnsRecord = dns_get_record($host, DNS_A);
+        $dnsRecord = dns_get_record($host, $type);
         if ($onlyIp) {
             return array_column($dnsRecord, 'ip');
         }
