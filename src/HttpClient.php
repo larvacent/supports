@@ -78,4 +78,19 @@ class HttpClient extends BaseObject
         $response = $http->getHttpClient()->get($url);
         return $response->getHeaders();
     }
+
+    /**
+     * 检查 CORS 跨域
+     * @param string $url
+     * @param string $origin
+     * @return bool
+     */
+    public static function checkCors($url, $origin)
+    {
+        $headers = static::getHeaders($url, ['Referer' => $origin, 'Origin' => $origin]);
+        if (in_array($headers['Access-Control-Allow-Origin'][0], [$origin, '*'])) {
+            return true;
+        }
+        return false;
+    }
 }
