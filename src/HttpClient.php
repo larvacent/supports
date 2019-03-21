@@ -72,15 +72,16 @@ class HttpClient extends BaseObject
 
     /**
      * 获取 响应的 Header
-     * @param string $url
-     * @param array $headers
+     * @param string $url 目标Url
+     * @param array $headers Headers
+     * @param int $timeout 超时时间
      * @return array|false
      */
-    public static function getHeaders($url, $headers = [])
+    public static function getHeaders($url, $headers = [], $timeout = 50)
     {
         $http = new static([
-            'timeout' => 20,
-            'connectTimeout' => 20,
+            'timeout' => $timeout,//请求超时的秒数。使用 0 无限期的等待(默认行为)。
+            'connectTimeout' => $timeout,//表示等待服务器响应超时的最大值，使用 0 将无限等待 (默认行为).
             'httpOptions' => [
                 'verify' => false,
                 'http_errors' => false,
@@ -96,11 +97,12 @@ class HttpClient extends BaseObject
      * 检查 CORS 跨域
      * @param string $url
      * @param string $origin
+     * @param int $timeout 超时时间
      * @return bool
      */
-    public static function checkCors($url, $origin)
+    public static function checkCors($url, $origin, $timeout = 50)
     {
-        $headers = static::getHeaders($url, ['Referer' => $origin, 'Origin' => $origin]);
+        $headers = static::getHeaders($url, ['Referer' => $origin, 'Origin' => $origin], $timeout);
         if (isset($headers['Access-Control-Allow-Origin']) && in_array($headers['Access-Control-Allow-Origin'][0], [$origin, '*'])) {
             return true;
         }
