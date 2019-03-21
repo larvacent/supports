@@ -30,6 +30,11 @@ class HttpClient extends BaseObject
     public $timeout = 5.0;
 
     /**
+     * @var float
+     */
+    public $connectTimeout = 5.0;
+
+    /**
      * @var string
      */
     protected $baseUri = '';
@@ -73,7 +78,15 @@ class HttpClient extends BaseObject
      */
     public static function getHeaders($url, $headers = [])
     {
-        $http = new static(['timeout' => 20, 'verify' => false, 'headers' => $headers]);
+        $http = new static([
+            'timeout' => 20,
+            'connectTimeout' => 20,
+            'httpOptions' => [
+                'verify' => false,
+                'http_errors' => false,
+                'headers' => $headers
+            ]
+        ]);
         /** @var \Psr\Http\Message\ResponseInterface $response */
         $response = $http->getHttpClient()->get($url);
         return $response->getHeaders();
@@ -88,7 +101,7 @@ class HttpClient extends BaseObject
     public static function checkCors($url, $origin)
     {
         $headers = static::getHeaders($url, ['Referer' => $origin, 'Origin' => $origin]);
-        if (in_array($headers['Access-Control-Allow-Origin'][0], [$origin, '*'])) {
+        if (isset($headers['Access-Control-Allow-Origin']) && in_array($headers['Access-Control-Allow-Origin'][0], [$origin, '*'])) {
             return true;
         }
         return false;
