@@ -244,10 +244,13 @@ class IPHelper
         if (filter_var($host, FILTER_VALIDATE_IP)) {
             return $host;
         }
-        $dnsRecord = dns_get_record($host, $type);
-        if ($onlyIp) {
-            return array_column($dnsRecord, 'ip');
+        $dnsRecord = @dns_get_record($host, $type);
+        if ($dnsRecord) {
+            if ($onlyIp) {
+                return array_column($dnsRecord, 'ip');
+            }
+            return $dnsRecord;
         }
-        return $dnsRecord;
+        return false;
     }
 }
