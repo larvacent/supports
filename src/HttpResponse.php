@@ -50,8 +50,29 @@ class HttpResponse
     /**
      * @return ResponseInterface
      */
-    public function getRawResponse(){
+    public function getRawResponse()
+    {
         return $this->rawResponse;
+    }
+
+    /**
+     * 获取服务器类型
+     * @return string
+     */
+    public function getServer()
+    {
+        if ($this->hasHeader('Server')) {
+            return $this->getHeaderLine('Server');
+        }
+        return 'Unknown';
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->getHeaderLine('Content-Type');
     }
 
     /**
@@ -61,7 +82,7 @@ class HttpResponse
     public function getData()
     {
         if ($this->_data) {
-            $contentType = $this->getHeaderLine('Content-Type');
+            $contentType = $this->getContentType();
             $format = $this->detectFormatByContentType($contentType);
             if ($format === null) {
                 $format = $this->detectFormatByContent($this->getContent());
@@ -298,20 +319,6 @@ class HttpResponse
             }
         }
         return $result;
-    }
-
-    /**
-     * Returns default format automatically detected from headers and content.
-     * @return string|null format name, 'null' - if detection failed.
-     */
-    protected function defaultFormat()
-    {
-        $contentType = $this->getHeaderLine('Content-Type');
-        $format = $this->detectFormatByContentType($contentType);
-        if ($format === null) {
-            $format = $this->detectFormatByContent($this->getContent());
-        }
-        return $format;
     }
 
     /**
