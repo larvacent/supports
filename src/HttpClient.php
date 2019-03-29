@@ -60,13 +60,13 @@ class HttpClient extends BaseObject
     }
 
     /**
-     * 获取基础路径
+     * 设置参数
      * @param array $httpOptions
      * @return string
      */
     public function setHttpOptions($httpOptions)
     {
-        $this->httpOptions = $httpOptions;
+        $this->httpOptions = array_merge($this->httpOptions, $httpOptions);
         return $this;
     }
 

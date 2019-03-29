@@ -10,6 +10,7 @@ namespace Larva\Supports\Traits;
 use DOMDocument;
 use DOMElement;
 use DOMText;
+use Larva\Supports\HttpResponse;
 use SimpleXMLElement;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -185,56 +186,11 @@ trait HasHttpRequest
      */
     protected function unwrapResponse(ResponseInterface $response)
     {
-        $content = $response->getBody()->getContents();
-        if (!empty($content)) {
-            $contentType = $response->getHeaderLine('Content-Type');
-            $format = $this->detectFormatByContentType($contentType);
-            if ($format === null) {
-                $format = $this->detectFormatByContent($content);
-            }
-            switch ($format) {
-                case 'json':
-                    return json_decode((string)$content, true);
-                    break;
-                case 'urlencoded':
-                    $data = [];
-                    parse_str((string)$content, $data);
-                    return $data;
-                    break;
-                case 'xml':
-                    if (preg_match('/charset=(.*)/i', $contentType, $matches)) {
-                        $encoding = $matches[1];
-                    } else {
-                        $encoding = 'UTF-8';
-                    }
-                    $dom = new \DOMDocument('1.0', $encoding);
-                    $dom->loadXML((string)$content, LIBXML_NOCDATA);
-                    return $this->convertXmlToArray(simplexml_import_dom($dom->documentElement));
-                    break;
-                default:
-                    return $content;
-            }
+        $response = new HttpResponse($response);
+        if(($data = $response->getData()) != null){
+            return $data;
         }
-        return $content;
-    }
-
-    /**
-     * Converts XML document to array.
-     * @param string|\SimpleXMLElement $xml xml to process.
-     * @return array XML array representation.
-     */
-    protected function convertXmlToArray($xml)
-    {
-        if (is_string($xml)) {
-            $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
-        }
-        $result = (array)$xml;
-        foreach ($result as $key => $value) {
-            if (!is_scalar($value)) {
-                $result[$key] = $this->convertXmlToArray($value);
-            }
-        }
-        return $result;
+        return $response->getBody();
     }
 
     /**
@@ -283,45 +239,5 @@ trait HasHttpRequest
         } else {
             $element->appendChild(new DOMText((string)$data));
         }
-    }
-
-    /**
-     * Detects format from headers.
-     * @param string $contentType source content-type.
-     * @return null|string format name, 'null' - if detection failed.
-     */
-    protected function detectFormatByContentType($contentType)
-    {
-        if (!empty($contentType)) {
-            if (stripos($contentType, 'json') !== false) {
-                return 'json';
-            }
-            if (stripos($contentType, 'urlencoded') !== false) {
-                return 'urlencoded';
-            }
-            if (stripos($contentType, 'xml') !== false) {
-                return 'xml';
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Detects response format from raw content.
-     * @param string $content raw response content.
-     * @return null|string format name, 'null' - if detection failed.
-     */
-    protected function detectFormatByContent($content)
-    {
-        if (preg_match('/^\\{.*\\}$/is', $content)) {
-            return 'json';
-        }
-        if (preg_match('/^([^=&])+=[^=&]+(&[^=&]+=[^=&]+)*$/', $content)) {
-            return 'urlencoded';
-        }
-        if (preg_match('/^<.*>$/s', $content)) {
-            return 'xml';
-        }
-        return null;
     }
 }
