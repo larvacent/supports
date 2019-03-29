@@ -81,7 +81,7 @@ class HttpResponse
      */
     public function getData()
     {
-        if ($this->_data) {
+        if (!$this->_data) {
             $contentType = $this->getContentType();
             $format = $this->detectFormatByContentType($contentType);
             if ($format === null) {
