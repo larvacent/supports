@@ -35,7 +35,7 @@ class HttpResponse
     /**
      * @var null
      */
-    private $_data = [];
+    private $_data = null;
 
     /**
      * Response constructor.
@@ -45,6 +45,13 @@ class HttpResponse
     {
         $this->rawResponse = $response;
         $this->_content = (string)$this->rawResponse->getBody()->getContents();
+    }
+
+    /**
+     * @return ResponseInterface
+     */
+    public function getRawResponse(){
+        return $this->rawResponse;
     }
 
     /**
@@ -78,8 +85,6 @@ class HttpResponse
                     $dom->loadXML($this->getContent(), LIBXML_NOCDATA);
                     $this->_data = $this->convertXmlToArray(simplexml_import_dom($dom->documentElement));
                     break;
-                default:
-                    $this->_data = [];
             }
         }
         return $this->_data;
