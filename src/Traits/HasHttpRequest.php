@@ -203,7 +203,7 @@ trait HasHttpRequest
         if (($data = $response->getData()) != null) {
             return $data;
         }
-        return $response->getBody();
+        return $response->getContent();
     }
 
     /**
