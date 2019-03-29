@@ -74,7 +74,7 @@ class HtmlHelper
         if (preg_match("/<meta.+?charset=[^\\w]?([-\\w]+)/i", $content, $match)) {
             return strtoupper($match [1]);
         } else { // 检测中文常用编码
-            return strtoupper(mb_detect_encoding($content, ['ASCII', 'CP936', 'GB18030', 'UTF-8', 'BIG-5']));
+            return strtoupper(mb_detect_encoding($content, ['ASCII', 'CP936', 'GB2312', 'GBK', 'GB18030', 'UTF-8', 'BIG-5']));
         }
     }
 
@@ -90,25 +90,24 @@ class HtmlHelper
             if (($chatSet = static::getCharSet($content)) != 'UTF-8') { // 转码
                 $content = mb_convert_encoding($content, 'UTF-8', $chatSet);
             }
-            if (preg_match("#<head[^>]*>(.*?)</head>#si", $content, $head)) {
-                // 解析title
-                if (preg_match('#<title[^>]*>([^>]*)</title>#si', $head [1], $match)) {
-                    $result ['title'] = trim(strip_tags($match [1]));
+            // 解析title
+            if (preg_match('#<title[^>]*>(.*?)</title>#si', $content, $match)) {
+                $result ['title'] = trim(strip_tags($match [1]));
+            }
+
+            // 解析meta
+            if (preg_match_all('/<[\s]*meta[\s]*name="?' . '([^>"]*)"?[\s]*' . 'content="?([^>"]*)"?[\s]*[\/]?[\s]*>/si',$content, $match)) {
+                // name转小写
+                $names = array_map('strtolower', $match [1]);
+                $values = $match [2];
+                $nameTotal = count($names);
+                for ($i = 0; $i < $nameTotal; $i++) {
+                    $result ['metaTags'] [$names [$i]] = $values [$i];
                 }
-                // 解析meta
-                if (preg_match_all('/<[\s]*meta[\s]*name="?' . '([^>"]*)"?[\s]*' . 'content="?([^>"]*)"?[\s]*[\/]?[\s]*>/si', $head [1], $match)) {
-                    // name转小写
-                    $names = array_map('strtolower', $match [1]);
-                    $values = $match [2];
-                    $nameTotal = count($names);
-                    for ($i = 0; $i < $nameTotal; $i++) {
-                        $result ['metaTags'] [$names [$i]] = $values [$i];
-                    }
-                }
-                if (isset ($result ['metaTags'] ['keywords'])) {//将关键词切成数组
-                    $keywords = str_replace(['，', '|', '、', ' '], ',', $result ['metaTags'] ['keywords']);
-                    $result ['keywords'] = explode(',', $keywords);
-                }
+            }
+            if (isset ($result ['metaTags'] ['keywords'])) {//将关键词切成数组
+                $keywords = str_replace(['，', '|', '、', ' '], ',', $result ['metaTags'] ['keywords']);
+                $result ['keywords'] = explode(',', $keywords);
             }
         }
         return $result;
