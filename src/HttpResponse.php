@@ -242,7 +242,7 @@ class HttpResponse
      */
     public function __call($name, $params)
     {
-        if (!method_exists($this->rawResponse, $name)) {
+        if (method_exists($this->rawResponse, $name)) {
             return call_user_func_array([$this->rawResponse, $name], $params);
         }
         throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
