@@ -34,16 +34,14 @@ class HttpProClient extends BaseObject
     public $connectTimeout = 5.0;
 
     /**
+     * @var bool
+     */
+    public $httpErrors = false;
+
+    /**
      * @var string
      */
     protected $baseUri = '';
-
-    /**
-     * Http client options.
-     *
-     * @var array
-     */
-    public $httpOptions = ['http_errors' => false];
 
     /**
      * 获取基础路径
@@ -62,17 +60,6 @@ class HttpProClient extends BaseObject
     public function setBaseUri($baseUri)
     {
         $this->baseUri = $baseUri;
-        return $this;
-    }
-
-    /**
-     * 设置参数
-     * @param array $httpOptions
-     * @return string
-     */
-    public function setHttpOptions($httpOptions)
-    {
-        $this->httpOptions = array_merge($this->httpOptions, $httpOptions);
         return $this;
     }
 

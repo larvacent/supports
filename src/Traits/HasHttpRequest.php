@@ -10,12 +10,12 @@ namespace Larva\Supports\Traits;
 use DOMDocument;
 use DOMElement;
 use DOMText;
-use Larva\Supports\HttpResponse;
-use SimpleXMLElement;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
-use Psr\Http\Message\ResponseInterface;
+use Larva\Supports\HttpResponse;
 use Larva\Supports\StringHelper;
+use Psr\Http\Message\ResponseInterface;
+use SimpleXMLElement;
 
 /**
  * Trait HasHttpRequest
@@ -24,6 +24,7 @@ use Larva\Supports\StringHelper;
  * @method HandlerStack getHandlerStack()
  * @property string $timeout
  * @property string $connectTimeout
+ * @property boolean $httpErrors
  */
 trait HasHttpRequest
 {
@@ -161,6 +162,17 @@ trait HasHttpRequest
     }
 
     /**
+     * 设置参数
+     * @param array $httpOptions
+     * @return string
+     */
+    public function setHttpOptions($httpOptions)
+    {
+        $this->httpOptions = array_merge($this->httpOptions, $httpOptions);
+        return $this;
+    }
+
+    /**
      * Return Guzzle options.
      *
      * @return array
@@ -171,6 +183,7 @@ trait HasHttpRequest
             'base_uri' => method_exists($this, 'getBaseUri') ? $this->getBaseUri() : '',
             'timeout' => property_exists($this, 'timeout') ? $this->timeout : 5.0,
             'connect_timeout' => property_exists($this, 'connectTimeout') ? $this->connectTimeout : 5.0,
+            'http_errors' => property_exists($this, 'httpErrors') ? $this->httpErrors : true,
         ], $this->httpOptions);
         if (method_exists($this, 'getHandlerStack')) {
             $options['handler'] = $this->getHandlerStack();
@@ -187,7 +200,7 @@ trait HasHttpRequest
     protected function unwrapResponse(ResponseInterface $response)
     {
         $response = new HttpResponse($response);
-        if(($data = $response->getData()) != null){
+        if (($data = $response->getData()) != null) {
             return $data;
         }
         return $response->getBody();
