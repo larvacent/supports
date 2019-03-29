@@ -63,4 +63,54 @@ class HtmlHelper
         }
         return $html;
     }
+
+    /**
+     * 检测 Html 编码
+     * @param string $content
+     * @return string
+     */
+    public static function getCharSet($content)
+    {
+        if (preg_match("/<meta.+?charset=[^\\w]?([-\\w]+)/i", $content, $match)) {
+            return strtoupper($match [1]);
+        } else { // 检测中文常用编码
+            return strtoupper(mb_detect_encoding($content, ['ASCII', 'CP936', 'GB18030', 'UTF-8', 'BIG-5']));
+        }
+    }
+
+    /**
+     * 提取所有的 Head 标签返回一个数组
+     * @param string $content
+     * @return array
+     */
+    public static function getHeadTags($content)
+    {
+        $result = [];
+        if (is_string($content) && !empty ($content)) {
+            if (($chatSet = static::getCharSet($content)) != 'UTF-8') { // 转码
+                $content = mb_convert_encoding($content, 'UTF-8', $chatSet);
+            }
+            if (preg_match("#<head[^>]*>(.*?)</head>#si", $content, $head)) {
+                // 解析title
+                if (preg_match('#<title[^>]*>([^>]*)</title>#si', $head [1], $match)) {
+                    $result ['title'] = trim(strip_tags($match [1]));
+                }
+                // 解析meta
+                if (preg_match_all('/<[\s]*meta[\s]*name="?' . '([^>"]*)"?[\s]*' . 'content="?([^>"]*)"?[\s]*[\/]?[\s]*>/si', $head [1], $match)) {
+                    // name转小写
+                    $names = array_map('strtolower', $match [1]);
+                    $values = $match [2];
+                    $nameTotal = count($names);
+                    for ($i = 0; $i < $nameTotal; $i++) {
+                        $result ['metaTags'] [$names [$i]] = $values [$i];
+                    }
+                }
+                if (isset ($result ['metaTags'] ['keywords'])) {//将关键词切成数组
+                    $keywords = str_replace(['，', '|', '、', ' '], ',', $result ['metaTags'] ['keywords']);
+                    $result ['keywords'] = explode(',', $keywords);
+                }
+            }
+        }
+        return $result;
+    }
 }
