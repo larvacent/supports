@@ -103,6 +103,18 @@ class StringHelper
     }
 
     /**
+     * Mysql 时间戳和自增ID生成 objectId
+     * @param int $timestamp
+     * @param int $id
+     * @return string
+     */
+    public static function toObjectId($timestamp, $id = null)
+    {
+        $created_at_hex = dechex($timestamp . $id);
+        return str_pad($created_at_hex, 24, 0, STR_PAD_RIGHT);
+    }
+
+    /**
      * Return the remainder of a string after a given value.
      *
      * @param string $subject
@@ -356,9 +368,9 @@ class StringHelper
      *
      * @param int $length
      *
+     * @return string
      * @throws \Exception
      *
-     * @return string
      */
     public static function random($length = 16)
     {
@@ -599,13 +611,13 @@ class StringHelper
     /**
      * Convert string's encoding.
      *
-     * @author yansongda <me@yansonga.cn>
-     *
      * @param string $string
      * @param string $to
      * @param string $from
      *
      * @return string
+     * @author yansongda <me@yansonga.cn>
+     *
      */
     public static function encoding($string, $to = 'utf-8', $from = 'gb2312')
     {
