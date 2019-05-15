@@ -7,7 +7,6 @@
 
 namespace Larva\Supports;
 
-
 use GuzzleHttp\Psr7\Response;
 use Larva\Supports\Exception\InvalidCallException;
 use Larva\Supports\Exception\UnknownMethodException;
@@ -141,7 +140,7 @@ class HttpResponse
      * Checks if response status code is OK (status code = 20x)
      * @return bool whether response is OK.
      */
-    public function getIsOk()
+    public function isOk()
     {
         return strncmp('20', $this->getStatusCode(), 2) === 0;
     }
@@ -185,17 +184,7 @@ class HttpResponse
     {
         return $this->getStatusCode() >= 500 && $this->getStatusCode() < 600;
     }
-
-    /**
-     * 是否响应成功
-     *
-     * @return boolean
-     */
-    public function isOk()
-    {
-        return $this->getStatusCode() == 200;
-    }
-
+    
     /**
      * 是否是403
      *
