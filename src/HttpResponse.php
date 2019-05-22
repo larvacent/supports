@@ -184,7 +184,7 @@ class HttpResponse
     {
         return $this->getStatusCode() >= 500 && $this->getStatusCode() < 600;
     }
-    
+
     /**
      * 是否是403
      *
