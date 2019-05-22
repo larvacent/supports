@@ -10,7 +10,7 @@ namespace Larva\Supports;
 use InvalidArgumentException;
 
 /**
- * Class JsonHelper
+ * Class Json
  *
  * @see yii2 BaseJson
  * @author Qiang Xue <qiang.xue@gmail.com>

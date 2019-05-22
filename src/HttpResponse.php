@@ -88,7 +88,7 @@ class HttpResponse
             }
             switch ($format) {
                 case 'json':
-                    $this->_data = json_decode($this->getContent(), true);
+                    $this->_data = Json::decode($this->getContent());
                     break;
                 case 'urlencoded':
                     $data = [];
