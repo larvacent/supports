@@ -96,7 +96,7 @@ class HtmlHelper
             }
 
             // 解析meta
-            if (preg_match_all('/<[\s]*meta[\s]*name="?' . '([^>"]*)"?[\s]*' . 'content="?([^>"]*)"?[\s]*[\/]?[\s]*>/si',$content, $match)) {
+            if (preg_match_all('/<[\s]*meta[\s]*name="?' . '([^>"]*)"?[\s]*' . 'content="?([^>"]*)"?[\s]*[\/]?[\s]*>/si', $content, $match)) {
                 // name转小写
                 $names = array_map('strtolower', $match [1]);
                 $values = $match [2];
@@ -111,5 +111,41 @@ class HtmlHelper
             }
         }
         return $result;
+    }
+
+    /**
+     * 获取页面内的所有链接
+     * @param string $url
+     * @return array
+     */
+    public function getOutLink($url)
+    {
+        $parse = parse_url($url);
+        $hostname = $parse ['host'];
+        $Client = new HttpProClient ();
+        /** @var HttpResponse $response */
+        $response = $Client->get($url);
+        if ($response->isOk()) {
+            if (preg_match_all('/<a(.*?)href="(.*?)"(.*?)>(.*?)<\/a>/i', $response->getContent(), $document)) {
+                $links = [];
+                $outLinks = [];
+                $inLink = 0;
+                foreach ($document [2] as $key => $link) {
+                    $matches = parse_url($link);
+                    if (!isset ($matches ['host']) || $matches ['host'] == $hostname) { // 内联
+                        $inLink++;
+                        continue;
+                    }
+                    if (!in_array($matches ['host'], $outLinks) && (stripos($link, 'http:') !== false || stripos($link, 'https:') !== false)) {
+                        $outLinks [] = $matches ['host'];
+                        $links [] = ['title' => $document [4] [$key], 'nofollow' => !strpos($document [1] [$key], 'nofollow') ? 0 : 1, 'url' => $link, 'host' => $matches ['host']];
+                    } else {
+                        continue;
+                    }
+                }
+                return ['count' => count($links) + $inLink, 'inlink' => $inLink, 'outlink' => count($links), 'dataList' => $links];
+            }
+        }
+        return ['count' => 0, 'inlink' => 0, 'outlink' => 0, 'dataList' => []];
     }
 }
