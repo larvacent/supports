@@ -118,7 +118,7 @@ class HtmlHelper
      * @param string $url
      * @return array
      */
-    public function getOutLink($url)
+    public static function getOutLink($url)
     {
         $parse = parse_url($url);
         $hostname = $parse ['host'];
@@ -126,25 +126,37 @@ class HtmlHelper
         /** @var HttpResponse $response */
         $response = $Client->get($url);
         if ($response->isOk()) {
-            if (preg_match_all('/<a(.*?)href="(.*?)"(.*?)>(.*?)<\/a>/i', $response->getContent(), $document)) {
-                $links = [];
-                $outLinks = [];
-                $inLink = 0;
-                foreach ($document [2] as $key => $link) {
-                    $matches = parse_url($link);
-                    if (!isset ($matches ['host']) || $matches ['host'] == $hostname) { // 内联
-                        $inLink++;
-                        continue;
-                    }
-                    if (!in_array($matches ['host'], $outLinks) && (stripos($link, 'http:') !== false || stripos($link, 'https:') !== false)) {
-                        $outLinks [] = $matches ['host'];
-                        $links [] = ['title' => $document [4] [$key], 'nofollow' => !strpos($document [1] [$key], 'nofollow') ? 0 : 1, 'url' => $link, 'host' => $matches ['host']];
-                    } else {
-                        continue;
-                    }
+            return static::getHtmlOutLink($response->getContent(), $hostname);
+        }
+        return ['count' => 0, 'inlink' => 0, 'outlink' => 0, 'dataList' => []];
+    }
+
+    /**
+     * 从内容获取外联
+     * @param string $content
+     * @param string $hostname
+     * @return array
+     */
+    public static function getHtmlOutLink($content, $hostname)
+    {
+        if (preg_match_all('/<a(.*?)href="(.*?)"(.*?)>(.*?)<\/a>/i', $content, $document)) {
+            $links = [];
+            $outLinks = [];
+            $inLink = 0;
+            foreach ($document [2] as $key => $link) {
+                $matches = parse_url($link);
+                if (!isset ($matches ['host']) || $matches ['host'] == $hostname) { // 内联
+                    $inLink++;
+                    continue;
                 }
-                return ['count' => count($links) + $inLink, 'inlink' => $inLink, 'outlink' => count($links), 'dataList' => $links];
+                if (!in_array($matches ['host'], $outLinks) && (stripos($link, 'http:') !== false || stripos($link, 'https:') !== false)) {
+                    $outLinks [] = $matches ['host'];
+                    $links [] = ['title' => $document [4] [$key], 'nofollow' => !strpos($document [1] [$key], 'nofollow') ? 0 : 1, 'url' => $link, 'host' => $matches ['host']];
+                } else {
+                    continue;
+                }
             }
+            return ['count' => count($links) + $inLink, 'inlink' => $inLink, 'outlink' => count($links), 'dataList' => $links];
         }
         return ['count' => 0, 'inlink' => 0, 'outlink' => 0, 'dataList' => []];
     }
