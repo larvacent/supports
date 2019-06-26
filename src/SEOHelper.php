@@ -37,6 +37,52 @@ class SEOHelper
     }
 
     /**
+     * 天级收录
+     * @param string $appid AppID
+     * @param string $token Token
+     * @param string|array $urls Url列表
+     * @return HttpResponse
+     */
+    public static function baiduDayInclusion($appid, $token, $urls)
+    {
+        if (is_array($urls)) {
+            $urls = implode("\n", $urls);
+        }
+        $client = new HttpProClient();
+        $client->setHttpOptions([
+            'http_errors' => false,
+        ]);
+        $client->setBaseUri('http://data.zz.baidu.com');
+        return $client->request('post', 'urls', [
+            'query' => ['appid' => $appid, 'token' => $token, 'type' => 'batch'],
+            'body' => $urls
+        ]);
+    }
+
+    /**
+     * 周级收录
+     * @param string $appid AppID
+     * @param string $token Token
+     * @param string|array $urls Url列表
+     * @return HttpResponse
+     */
+    public static function baiduWeekInclusion($appid, $token, $urls)
+    {
+        if (is_array($urls)) {
+            $urls = implode("\n", $urls);
+        }
+        $client = new HttpProClient();
+        $client->setHttpOptions([
+            'http_errors' => false,
+        ]);
+        $client->setBaseUri('http://data.zz.baidu.com');
+        return $client->request('post', 'urls', [
+            'query' => ['appid' => $appid, 'token' => $token, 'type' => 'batch'],
+            'body' => $urls
+        ]);
+    }
+
+    /**
      * AMP MIP 清理
      * @param string $token Token
      * @param string $url Url
