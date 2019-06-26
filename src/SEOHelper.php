@@ -172,8 +172,10 @@ class SEOHelper
 
     /**
      * AMP MIP 清理
+     * @param string $site
+     * @param string $username
      * @param string $token Token
-     * @param string $url Url
+     * @param string|array $urls
      * @return mixed
      */
     public static function shenmaAMPClean($site, $username, $token, $urls)
