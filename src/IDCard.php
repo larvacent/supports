@@ -38,7 +38,30 @@ class IDCard
     ];
 
     /**
+     * 获取身份证信息
+     * @param string $idCard
+     * @return array|false
+     */
+    public static function getInfo($idCard)
+    {
+        if (static::validateCard($idCard)) {
+            return [
+                'age' => static::getAgeByIdCard($idCard),
+                'birthday' => static::getBirthdayByIdCard($idCard),
+                'gender' => static::getGenderByIdCard($idCard),
+                'province' => static::getProvinceByIdCard($idCard),
+                'city' => static::getCityByIdCard($idCard),
+                'area' => static::getAreaByIdCard($idCard)
+            ];
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 验证身份证是否合法
+     * @param string $idCard
+     * @return bool
      */
     public static function validateCard($idCard)
     {
@@ -105,6 +128,39 @@ class IDCard
     }
 
     /**
+     * 获取身份证所在省
+     * @param string $idCard
+     * @return mixed
+     */
+    public static function getProvinceByIdCard($idCard)
+    {
+        $provinceCode = substr($idCard, 0, 2) . '0000';
+        return static::$locationCodes [$provinceCode];
+    }
+
+    /**
+     * 获取身份证所在市
+     * @param string $idCard
+     * @return mixed
+     */
+    public static function getCityByIdCard($idCard)
+    {
+        $cityCode = substr($idCard, 0, 4) . '00';
+        return static::$locationCodes [$cityCode];
+    }
+
+    /**
+     * 获取身份证所在市
+     * @param string $idCard
+     * @return mixed
+     */
+    public static function getAreaByIdCard($idCard)
+    {
+        $areaCode = substr($idCard, 0, 6);
+        return static::$locationCodes [$areaCode];
+    }
+
+    /**
      * 根据身份编号获取户籍所在地
      *
      * @param string $idCard 身份编号
@@ -112,13 +168,10 @@ class IDCard
      */
     public static function getLocationByIdCard($idCard)
     {
-        $provinceCode = substr($idCard, 0, 2) . '0000';
-        $cityCode = substr($idCard, 0, 4) . '00';
-        $areaCode = substr($idCard, 0, 6);
         return [
-            'province' => self::$locationCodes [$provinceCode],
-            'city' => self::$locationCodes [$cityCode],
-            'area' => self::$locationCodes [$areaCode]
+            'province' => static::getProvinceByIdCard($idCard),
+            'city' => static::getCityByIdCard($idCard),
+            'area' => static::getAreaByIdCard($idCard)
         ];
     }
 
