@@ -31,8 +31,7 @@ class SEOHelper
             'http_errors' => false,
         ]);
         $client->setBaseUri('http://data.zz.baidu.com');
-        return $client->request('post', 'urls', [
-            'query' => ['site' => $site, 'token' => $token],
+        return $client->request('post', "/urls?site={$site}&token={$token}", [
             'body' => $urls
         ]);
     }
@@ -54,8 +53,7 @@ class SEOHelper
             'http_errors' => false,
         ]);
         $client->setBaseUri('http://data.zz.baidu.com');
-        return $client->request('post', 'urls', [
-            'query' => ['site' => $site, 'token' => $token, 'type' => 'mip'],
+        return $client->request('post', "urls?site={$site}&token={$token}&type=mip", [
             'body' => $urls
         ]);
     }
@@ -77,8 +75,7 @@ class SEOHelper
             'http_errors' => false,
         ]);
         $client->setBaseUri('http://data.zz.baidu.com');
-        return $client->request('post', 'urls', [
-            'query' => ['site' => $site, 'token' => $token, 'type' => 'amp'],
+        return $client->request('post', "urls?site={$site}&token={$token}&type=amp", [
             'body' => $urls
         ]);
     }
@@ -117,8 +114,7 @@ class SEOHelper
             'http_errors' => false,
         ]);
         $client->setBaseUri('http://data.zz.baidu.com');
-        return $client->request('post', 'urls', [
-            'query' => ['appid' => $appid, 'token' => $token, 'type' => 'batch'],
+        return $client->request('post', "urls?appid={$appid}&token={$token}&type=realtime", [
             'body' => $urls
         ]);
     }
@@ -140,8 +136,7 @@ class SEOHelper
             'http_errors' => false,
         ]);
         $client->setBaseUri('http://data.zz.baidu.com');
-        return $client->request('post', 'urls', [
-            'query' => ['appid' => $appid, 'token' => $token, 'type' => 'batch'],
+        return $client->request('post', "urls?appid={$appid}&token={$token}&type=batch", [
             'body' => $urls
         ]);
     }
