@@ -13,6 +13,7 @@ use DOMText;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use Larva\Supports\HttpResponse;
+use Larva\Supports\Json;
 use Larva\Supports\StringHelper;
 use Psr\Http\Message\ResponseInterface;
 use SimpleXMLElement;
@@ -107,10 +108,10 @@ trait HasHttpRequest
      */
     protected function postJSON($endpoint, $params = [], $headers = [])
     {
-        return $this->request('post', $endpoint, [
-            'headers' => $headers,
-            'json' => $params,
-        ]);
+        $options = ['headers' => $headers];
+        $options['headers']['Accept'] = 'application/json';
+        $options['body'] = Json::encode($params);
+        return $this->request('post', $endpoint, $options);
     }
 
     /**
@@ -152,9 +153,9 @@ trait HasHttpRequest
     /**
      * Get default http client.
      *
+     * @return Client
      * @author yansongda <me@yansongda.cn>
      *
-     * @return Client
      */
     protected function getDefaultHttpClient()
     {
