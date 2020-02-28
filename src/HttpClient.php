@@ -35,6 +35,11 @@ class HttpClient extends BaseObject
     public $connectTimeout = 5.0;
 
     /**
+     * @var bool Http错误是否抛出异常
+     */
+    public $httpErrors = false;
+
+    /**
      * @var string
      */
     protected $baseUri = '';
