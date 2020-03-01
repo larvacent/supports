@@ -51,7 +51,7 @@ class IDCard
                 'gender' => static::getGenderByIdCard($idCard),
                 'province' => static::getProvinceByIdCard($idCard),
                 'city' => static::getCityByIdCard($idCard),
-                'area' => static::getAreaByIdCard($idCard)
+                'district' => static::getDistrictByIdCard($idCard)
             ];
         } else {
             return false;
@@ -83,6 +83,24 @@ class IDCard
             }
         }
         return false;
+    }
+
+    /**
+     * 生成随机身份证号码
+     * @param int $area
+     * @param string $gender M 男 F 女
+     * @param string $birthday 生日
+     * @return string
+     */
+    public static function generateCard($area, $gender, $birthday)
+    {
+        $birthday = str_replace('-', '', $birthday);
+        $code17 = $area . $birthday . sprintf("%02d", rand(1, 99));
+        $code17 .= static::getGenderCode($gender);
+        $iArr = str_split($code17);
+        $iSum17 = static::getPowerSum($iArr);
+        $val = static::getCheckCode($iSum17);
+        return $code17 . $val;
     }
 
     /**
@@ -154,7 +172,7 @@ class IDCard
      * @param string $idCard
      * @return mixed
      */
-    public static function getAreaByIdCard($idCard)
+    public static function getDistrictByIdCard($idCard)
     {
         $areaCode = substr($idCard, 0, 6);
         return static::$locationCodes [$areaCode];
@@ -171,7 +189,7 @@ class IDCard
         return [
             'province' => static::getProvinceByIdCard($idCard),
             'city' => static::getCityByIdCard($idCard),
-            'area' => static::getAreaByIdCard($idCard)
+            'district' => static::getDistrictByIdCard($idCard)
         ];
     }
 
@@ -243,5 +261,22 @@ class IDCard
             }
         }
         return $iSum;
+    }
+
+    /**
+     * 获取一个随机的性别代码
+     * @param string $gender
+     * @return mixed
+     */
+    private static function getGenderCode($gender)
+    {
+        if ($gender == 'M') {
+            $GenderCodes = [1, 3, 5, 7, 9];
+        } else {
+            $GenderCodes = [0, 2, 4, 6, 8];
+        }
+        $code = array_rand($GenderCodes, 1);
+        $genderCode = $GenderCodes[$code];
+        return $genderCode;
     }
 }
