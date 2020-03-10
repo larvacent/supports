@@ -15,6 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class HttpResponse
+ * @property-read array $data
  * @mixin Response
  *
  * @author Tongle Xu <xutongle@gmail.com>
@@ -32,7 +33,7 @@ class HttpResponse
     private $_content;
 
     /**
-     * @var null
+     * @var mixed
      */
     private $_data = null;
 
