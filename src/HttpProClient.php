@@ -11,6 +11,10 @@ use Larva\Supports\Traits\HasHttpRequest;
 
 /**
  * Http 客户端
+ * @method \Larva\Supports\HttpResponse post($endpoint, $params, $headers = [])
+ * @method \Larva\Supports\HttpResponse get($endpoint, $query = [], $headers = [])
+ * @method \Larva\Supports\HttpResponse postJSON($endpoint, $params = [], $headers = [])
+ * @method \Larva\Supports\HttpResponse postXML($endpoint, $data, $headers = [])
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */
