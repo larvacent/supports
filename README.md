@@ -8,12 +8,12 @@
 
 ## 环境需求
 
-- PHP >= 7.1.3
+- PHP >= 7.2.5
 
 ## Installation
 
 ```bash
-composer require larva/supports
+composer require larva/supports -vv
 ```
 
 ## License
