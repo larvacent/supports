@@ -110,6 +110,7 @@ trait HasHttpRequest
     {
         $options = ['headers' => $headers];
         $options['headers']['Accept'] = 'application/json';
+        $options['headers']['Content-Type'] = 'application/json';
         $options['body'] = Json::encode($params);
         return $this->request('post', $endpoint, $options);
     }
