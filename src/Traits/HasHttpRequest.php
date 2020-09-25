@@ -60,6 +60,19 @@ trait HasHttpRequest
     }
 
     /**
+     * 获取JSON
+     * @param string $endpoint
+     * @param array $query
+     * @param array $headers
+     * @return array
+     */
+    protected function getJSON($endpoint, $query = [], $headers = [])
+    {
+        $headers['Accept'] = 'application/json';
+        return $this->get($endpoint, $query, $headers);
+    }
+
+    /**
      * Make a post request.
      *
      * @param string $endpoint
@@ -108,11 +121,9 @@ trait HasHttpRequest
      */
     protected function postJSON($endpoint, $params = [], $headers = [])
     {
-        $options = ['headers' => $headers];
-        $options['headers']['Accept'] = 'application/json';
-        $options['headers']['Content-Type'] = 'application/json';
-        $options['body'] = Json::encode($params);
-        return $this->request('post', $endpoint, $options);
+        $headers['Accept'] = 'application/json';
+        $headers['Content-Type'] = 'application/json';
+        return $this->post($endpoint, Json::encode($params), $headers);
     }
 
     /**

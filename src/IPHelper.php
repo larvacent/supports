@@ -242,7 +242,7 @@ class IPHelper
     public static function dnsRecord($host, $type = DNS_A, $onlyIp = false)
     {
         if (filter_var($host, FILTER_VALIDATE_IP)) {
-            return $host;
+            return [$host];
         }
         $dnsRecord = @dns_get_record($host, $type);
         if ($dnsRecord) {
@@ -250,6 +250,20 @@ class IPHelper
                 return array_column($dnsRecord, 'ip');
             }
             return $dnsRecord;
+        }
+        return false;
+    }
+
+    /**
+     * 获取主机IP地址
+     * @param string $host
+     * @return false|string
+     */
+    public static function getHostIp($host)
+    {
+        $ips = IPHelper::dnsRecord($host, DNS_A, true);
+        if ($ips) {
+            return array_shift($ips);
         }
         return false;
     }
