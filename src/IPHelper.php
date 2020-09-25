@@ -255,13 +255,27 @@ class IPHelper
     }
 
     /**
-     * 获取主机IP地址
+     * 获取主机IPV4地址
      * @param string $host
      * @return false|string
      */
-    public static function getHostIp($host)
+    public static function getHostIpV4($host)
     {
         $ips = IPHelper::dnsRecord($host, DNS_A, true);
+        if ($ips) {
+            return array_shift($ips);
+        }
+        return false;
+    }
+
+    /**
+     * 获取主机IPV6地址
+     * @param string $host
+     * @return false|string
+     */
+    public static function getHostIpV6($host)
+    {
+        $ips = IPHelper::dnsRecord($host, DNS_AAAA, true);
         if ($ips) {
             return array_shift($ips);
         }
