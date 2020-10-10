@@ -82,7 +82,7 @@ class HttpClient extends BaseObject
      * @param int $timeout 超时时间
      * @return array|false
      */
-    public static function getHeaders($url, $headers = [], $timeout = 50)
+    public static function getHeaders($url, $headers = [], $timeout = 5)
     {
         $http = new static([
             'timeout' => $timeout,//请求超时的秒数。使用 0 无限期的等待(默认行为)。
@@ -100,8 +100,8 @@ class HttpClient extends BaseObject
 
     /**
      * 检查 CORS 跨域
-     * @param string $url
-     * @param string $origin
+     * @param string $url 检查的Url
+     * @param string $origin 来源
      * @param int $timeout 超时时间
      * @return bool
      */
