@@ -197,6 +197,7 @@ trait HasHttpRequest
             'timeout' => property_exists($this, 'timeout') ? $this->timeout : 5.0,
             'connect_timeout' => property_exists($this, 'connectTimeout') ? $this->connectTimeout : 5.0,
             'http_errors' => property_exists($this, 'httpErrors') ? $this->httpErrors : true,
+            'force_ip_resolve'=>property_exists($this, 'forceIpResolve') ? $this->forceIpResolve : 'v4',
         ], $this->httpOptions);
         if (method_exists($this, 'getHandlerStack')) {
             $options['handler'] = $this->getHandlerStack();
