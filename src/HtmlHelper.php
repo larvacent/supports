@@ -160,4 +160,31 @@ class HtmlHelper
         }
         return ['count' => 0, 'inlink' => 0, 'outlink' => 0, 'dataList' => []];
     }
+
+    /**
+     * 获取简介
+     * @param string $content
+     * @param int $len
+     * @return string
+     */
+    public static function getSummary($content, $len = 190)
+    {
+        $description = str_replace(["\r\n", "\t", '&ldquo;', '&rdquo;', '&nbsp;'], '', strip_tags($content));
+        return mb_substr($description, 0, $len);
+    }
+
+    /**
+     * 获取缩略图
+     * @param $content
+     * @return null|string
+     */
+    public static function getThumb($content)
+    {
+        //自动提取缩略图
+        $matches = [];
+        if (preg_match_all("/(src)=([\"|']?)([^ \"'>]+\.(gif|jpg|jpeg|bmp|png))\\2/i", $content, $matches)) {
+            return $matches[3][0];
+        }
+        return null;
+    }
 }
