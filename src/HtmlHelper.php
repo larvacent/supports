@@ -187,4 +187,37 @@ class HtmlHelper
         }
         return null;
     }
+
+    /**
+     * 删除所有IMG标签
+     * @param string $content
+     * @return string|string[]|null
+     */
+    public static function cleanImg($content)
+    {
+        $content = preg_replace('/<img[^>]*src=[\'"]?([^>\'"\s]*)[\'"]?[^>]*>/ie', "", $content);
+        return $content;
+    }
+
+    /**
+     * 获取MIP
+     * @param $content
+     * @return string
+     */
+    public static function getMIPContent($content)
+    {
+        $content = preg_replace('/<img[^>]*src=[\'"]?([^>\'"\s]*)[\'"]?[^>]*>/ie', "<mip-img data-carousel=\"carousel\"  class=\"mip-element mip-img\"  src=\"$1\"></mip-img>", $content);
+        return $content;
+    }
+
+    /**
+     * 获取AMP
+     * @param $content
+     * @return string
+     */
+    public static function getAMPContent($content)
+    {
+        $content = preg_replace('/<img[^>]*src=[\'"]?([^>\'"\s]*)[\'"]?[^>]*>/ie', "<amp-img data-carousel=\"carousel\"  class=\"amp-element amp-img\"  src=\"$1\"></amp-img>", $content);
+        return $content;
+    }
 }
